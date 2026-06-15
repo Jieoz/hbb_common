@@ -28,7 +28,8 @@ pub use permanent_password::{
 };
 use permanent_password::{
     decode_permanent_password_h1_from_hashed_storage, decrypt_permanent_password_str_or_original,
-    encode_permanent_password_encrypted_storage_from_h1, password_is_empty_or_not_hashed,
+    encode_permanent_password_encrypted_storage_from_h1,
+    local_permanent_password_storage_matches_plain, password_is_empty_or_not_hashed,
     preset_permanent_password_storage_matches_plain, DEFAULT_SALT_LEN, PASSWORD_ENC_VERSION,
 };
 
@@ -1310,6 +1311,13 @@ impl Config {
     pub fn get_local_permanent_password_storage_and_salt() -> (String, String) {
         let config = CONFIG.read().unwrap();
         (config.password.clone(), config.salt.clone())
+    }
+
+    /// Returns true if `plain` matches the locally persisted permanent password.
+    /// Used to answer "is the permanent password preset to this value" queries.
+    pub fn matches_permanent_password_plain(plain: &str) -> bool {
+        let (storage, salt) = Self::get_local_permanent_password_storage_and_salt();
+        local_permanent_password_storage_matches_plain(&storage, &salt, plain)
     }
 
     /// Persist permanent password storage and salt from service->user config sync.

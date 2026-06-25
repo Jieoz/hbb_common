@@ -2807,7 +2807,13 @@ pub fn is_disable_installation() -> bool {
 // flutter: flutter/lib/common.dart -> option2bool()
 // sciter: Does not have the function, but it should be kept the same.
 pub fn option2bool(option: &str, value: &str) -> bool {
-    if option.starts_with("enable-") {
+    if option == keys::OPTION_ALLOW_D3D_RENDER {
+        // Private build: D3D rendering defaults ON, matching the actual
+        // render path in libs/scrap/src/common/codec.rs::allow_d3d_render().
+        // Empty/unset => true (ON), explicit "N" => false. Only this option
+        // is special-cased; other allow-* options keep their original semantics.
+        value != "N"
+    } else if option.starts_with("enable-") {
         value != "N"
     } else if option.starts_with("allow-")
         || option == "stop-service"

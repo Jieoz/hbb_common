@@ -2887,7 +2887,7 @@ pub fn is_disable_installation() -> bool {
 // flutter: flutter/lib/common.dart -> option2bool()
 // sciter: Does not have the function, but it should be kept the same.
 pub fn option2bool(option: &str, value: &str) -> bool {
-    if option == keys::OPTION_ALLOW_D3D_RENDER {
+    if option == "allow-d3d-render" {
         // Private build: D3D rendering defaults ON.
         value != "N"
     } else if option.starts_with("enable-") {
